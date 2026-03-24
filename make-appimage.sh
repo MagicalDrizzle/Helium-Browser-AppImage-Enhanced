@@ -30,7 +30,7 @@ STRACE_MODE=0 quick-sharun \
 	/usr/lib/libsoftokn3.so       \
 	/usr/lib/libfreeblpriv3.so    \
 	/usr/lib/libcloudproviders*   \
-  /usr/lib/libgtk-3.so*
+	/usr/lib/libgtk-3.so*
 
 # Additional changes can be done in between here
 
