@@ -22,7 +22,8 @@ strip -s -R .comment --strip-unneeded ./AppDir/bin/lib*.so
 # Deploy dependencies
 quick-sharun ./AppDir/bin/helium -- google.com --no-sandbox
 STRACE_MODE=0 quick-sharun \
-	./AppDir/bin/chrome_*         \
+	./AppDir/bin/chrome*          \
+	./AppDir/bin/helium_*         \
 	./AppDir/bin/libqt6_shim.so*  \
 	/usr/lib/libQt6Widgets.so*    \
 	/usr/lib/libnss*              \
