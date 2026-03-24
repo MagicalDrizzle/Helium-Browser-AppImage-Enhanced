@@ -3,16 +3,33 @@
 set -eu
 
 ARCH=$(uname -m)
-VERSION=$(pacman -Q PACKAGENAME | awk '{print $2; exit}') # example command to get version of application here
-export ARCH VERSION
+export ARCH
 export OUTPATH=./dist
-export ADD_HOOKS="self-updater.bg.hook"
+export ADD_HOOKS="self-updater.bg.hook:fix-namespaces.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
-export ICON=PATH_OR_URL_TO_ICON
-export DESKTOP=PATH_OR_URL_TO_DESKTOP_ENTRY
+export ICON=$PWD/AppDir/bin/product_logo_256.png
+export DESKTOP=https://raw.githubusercontent.com/imputnet/helium-linux/refs/heads/main/package/helium.desktop
+export DEPLOY_OPENGL=1
+export DEPLOY_VULKAN=1
+export DEPLOY_PIPEWIRE=1
+export DEPLOY_QT=1
+export DEPLOY_P11KIT=1
+export URUNTIME_PRELOAD=1 # really needed here
+
+# strip helium bundled libs
+strip -s -R .comment --strip-unneeded ./AppDir/bin/lib*.so
 
 # Deploy dependencies
-quick-sharun /PATH/TO/BINARY_AND_LIBRARIES_HERE
+quick-sharun ./AppDir/bin/helium -- google.com --no-sandbox
+STRACE_MODE=0 quick-sharun \
+	./AppDir/bin/chrome_*         \
+	./AppDir/bin/libqt6_shim.so*  \
+	/usr/lib/libQt6Widgets.so*    \
+	/usr/lib/libnss*              \
+	/usr/lib/libsoftokn3.so       \
+	/usr/lib/libfreeblpriv3.so    \
+	/usr/lib/libcloudproviders*   \
+  /usr/lib/libgtk-3.so*
 
 # Additional changes can be done in between here
 
